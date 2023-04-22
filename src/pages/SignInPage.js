@@ -1,20 +1,23 @@
 import styled from "styled-components";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import MyWalletLogo from "../components/MyWalletLogo";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import axios from "axios";
+import { UserContext } from "../contexts/UserContexts";
 
 export default function SignInPage() {
-
+  const navigate = useNavigate();
   const [mail, setMail] = useState("");
   const [password, setPassword] = useState("");
+  const { setUser } = useContext(UserContext);
 
   async function signIn(event) {
     event.preventDefault();
 
     try {
       const res = await axios.post(`${process.env.REACT_APP_API_URL}/`, { mail, password });
-      console.log(res.data);
+      setUser({ token: res.data });
+      navigate("/home");
     } catch (error) {
       alert(error.response.data);
     }
