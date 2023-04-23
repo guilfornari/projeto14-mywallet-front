@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { UserContext } from "../contexts/UserContexts";
@@ -10,6 +10,10 @@ export default function TransactionsPage() {
   const [description, setDescription] = useState("");
   const { user } = useContext(UserContext);
   const config = { headers: { Authorization: `Bearer ${user.token}` } }
+
+  useEffect(() => {
+    if (!user.token) return navigate("/");
+  }, []);
 
   const opType = useParams();
   if (opType.tipo === "saida") return opType.tipo = "saída";

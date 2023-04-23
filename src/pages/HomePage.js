@@ -10,7 +10,7 @@ import OperationCard from "../components/OperationCard";
 
 
 export default function HomePage() {
-  const { user } = useContext(UserContext);
+  const { user, setUser } = useContext(UserContext);
   const navigate = useNavigate();
   const config = { headers: { Authorization: `Bearer ${user.token}` } };
   const [operations, setOperations] = useState([]);
@@ -20,13 +20,18 @@ export default function HomePage() {
   useEffect(() => getOperationsList, []);
 
   async function getOperationsList() {
-    try {
-      const res = await axios.get(`${process.env.REACT_APP_API_URL}/home`, config);
-      setOperations(res.data);
-      sumBalance(res.data);
 
-    } catch (error) {
-      alert(error.response.data);
+    if (!user.token) {
+      navigate("/");
+    } else {
+      try {
+        const res = await axios.get(`${process.env.REACT_APP_API_URL}/home`, config);
+        setOperations(res.data);
+        sumBalance(res.data);
+
+      } catch (error) {
+        alert(error.response.data);
+      }
     }
   };
 
@@ -51,12 +56,19 @@ export default function HomePage() {
     }
   }
 
+  function logOut() {
+    localStorage.removeItem("user");
+    setUser({});
+    navigate("/");
+  }
 
   return (
     <HomeContainer>
       <Header>
         <h1>Olá, {user.name}</h1>
-        <BiExit />
+        <button onClick={logOut}>
+          <BiExit />
+        </button>
       </Header>
 
       <TransactionsContainer>
@@ -104,6 +116,12 @@ const Header = styled.header`
   margin-bottom: 15px;
   font-size: 26px;
   color: white;
+  button {
+    width: 50px;
+    height: 50px;
+    font-size: 30px;
+    background-color: #8c11be;
+  }
 `;
 const TransactionsContainer = styled.article`
   flex-grow: 1;
