@@ -1,11 +1,36 @@
 import styled from "styled-components";
 import { BiExit } from "react-icons/bi";
 import { AiOutlineMinusCircle, AiOutlinePlusCircle } from "react-icons/ai";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../contexts/UserContexts";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import OperationCard from "../components/OperationCard";
+
+
 
 export default function HomePage() {
   const { user } = useContext(UserContext);
+  const navigate = useNavigate();
+  const config = { headers: { Authorization: `Bearer ${user.token}` } };
+  const [operations, setOperations] = useState([]);
+
+  useEffect(() => getOperationsList, []);
+
+  async function getOperationsList() {
+    try {
+      const res = await axios.get(`${process.env.REACT_APP_API_URL}/home`, config);
+      console.log(res.data);
+      setOperations(res.data);
+
+    } catch (error) {
+      alert(error.response.data);
+    }
+  };
+
+  function newOps(opType) {
+    navigate(`/nova-transacao/${opType}`);
+  };
   return (
     <HomeContainer>
       <Header>
@@ -15,21 +40,12 @@ export default function HomePage() {
 
       <TransactionsContainer>
         <ul>
-          <ListItemContainer>
-            <div>
-              <span>30/11</span>
-              <strong>Almoço mãe</strong>
-            </div>
-            <Value color={"negativo"}>120,00</Value>
-          </ListItemContainer>
-
-          <ListItemContainer>
-            <div>
-              <span>15/11</span>
-              <strong>Salário</strong>
-            </div>
-            <Value color={"positivo"}>3000,00</Value>
-          </ListItemContainer>
+          {operations.map((ops) => (<OperationCard
+            key={ops._id}
+            amount={ops.amount}
+            description={ops.description}
+            type={ops.type}
+            date={ops.date} />))}
         </ul>
 
         <article>
@@ -40,25 +56,25 @@ export default function HomePage() {
 
 
       <ButtonsContainer>
-        <button>
+        <button onClick={() => newOps("entrada")}>
           <AiOutlinePlusCircle />
           <p>Nova <br /> entrada</p>
         </button>
-        <button>
+        <button onClick={() => newOps("saida")}>
           <AiOutlineMinusCircle />
           <p>Nova <br />saída</p>
         </button>
       </ButtonsContainer>
 
     </HomeContainer>
-  )
-}
+  );
+};
 
 const HomeContainer = styled.div`
   display: flex;
   flex-direction: column;
   height: calc(100vh - 50px);
-`
+`;
 const Header = styled.header`
   display: flex;
   align-items: center;
@@ -67,7 +83,7 @@ const Header = styled.header`
   margin-bottom: 15px;
   font-size: 26px;
   color: white;
-`
+`;
 const TransactionsContainer = styled.article`
   flex-grow: 1;
   background-color: #fff;
@@ -85,7 +101,7 @@ const TransactionsContainer = styled.article`
       text-transform: uppercase;
     }
   }
-`
+`;
 const ButtonsContainer = styled.section`
   margin-top: 15px;
   margin-bottom: 0;
@@ -104,21 +120,9 @@ const ButtonsContainer = styled.section`
       font-size: 18px;
     }
   }
-`
+`;
 const Value = styled.div`
   font-size: 16px;
   text-align: right;
   color: ${(props) => (props.color === "positivo" ? "green" : "red")};
-`
-const ListItemContainer = styled.li`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 8px;
-  color: #000000;
-  margin-right: 10px;
-  div span {
-    color: #c6c6c6;
-    margin-right: 10px;
-  }
-`
+`;
