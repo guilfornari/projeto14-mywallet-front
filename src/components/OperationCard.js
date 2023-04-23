@@ -3,17 +3,16 @@ import styled from "styled-components";
 
 
 export default function OperationCard({ amount, description, type, date }) {
-    const day = dayjs(date).format("DD/MM");
-    console.log(day);
-    return (
-        <ListItemContainer>
-            <div>
-                <span>{day}</span>
-                <strong>{description}</strong>
-            </div>
-            <Value color={type}>{amount}</Value>
-        </ListItemContainer>
-    );
+  const day = dayjs(date).format("DD/MM");
+  return (
+    <ListItemContainer>
+      <div>
+        <span>{day}</span>
+        <strong>{description}</strong>
+      </div>
+      <Value color={type}>{amount.toFixed(2)}</Value>
+    </ListItemContainer>
+  );
 };
 
 const Value = styled.div`

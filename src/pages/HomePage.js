@@ -14,14 +14,16 @@ export default function HomePage() {
   const navigate = useNavigate();
   const config = { headers: { Authorization: `Bearer ${user.token}` } };
   const [operations, setOperations] = useState([]);
+  const [balance, setBalance] = useState(0);
+  const [whatColor, setWhatColor] = useState("");
 
   useEffect(() => getOperationsList, []);
 
   async function getOperationsList() {
     try {
       const res = await axios.get(`${process.env.REACT_APP_API_URL}/home`, config);
-      console.log(res.data);
       setOperations(res.data);
+      sumBalance(res.data);
 
     } catch (error) {
       alert(error.response.data);
@@ -31,6 +33,25 @@ export default function HomePage() {
   function newOps(opType) {
     navigate(`/nova-transacao/${opType}`);
   };
+
+  function sumBalance(opsList) {
+    const creditOps = opsList.filter(op => op.type === "entrada");
+    const debitOps = opsList.filter(op => op.type === "saída");
+    const creditArr = creditOps.map(op => op.amount);
+    const debitArr = debitOps.map(op => op.amount);
+    const positiveSum = creditArr.reduce((a, b) => a + b, 0);
+    const negativeSum = debitArr.reduce((a, b) => a + b, 0);
+    const sumUp = positiveSum - negativeSum;
+    if (sumUp < 0) {
+      setBalance(sumUp * (-1));
+      setWhatColor("negativo");
+    } else {
+      setBalance(sumUp);
+      setWhatColor("positivo");
+    }
+  }
+
+
   return (
     <HomeContainer>
       <Header>
@@ -50,7 +71,7 @@ export default function HomePage() {
 
         <article>
           <strong>Saldo</strong>
-          <Value color={"positivo"}>2880,00</Value>
+          <Value color={whatColor}>{balance.toFixed(2)}</Value>
         </article>
       </TransactionsContainer>
 

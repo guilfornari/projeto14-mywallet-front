@@ -1,10 +1,11 @@
 import axios from "axios";
 import { useContext, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { UserContext } from "../contexts/UserContexts";
 
 export default function TransactionsPage() {
+  const navigate = useNavigate();
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
   const { user } = useContext(UserContext);
@@ -19,8 +20,10 @@ export default function TransactionsPage() {
     try {
       const res = await axios.post(`
       ${process.env.REACT_APP_API_URL}/nova-transacao/${opType.tipo}`,
-        { amount, description }, config);
+        { amount: Number(amount), description }, config);
       alert(res.data);
+      navigate("/home");
+
 
     } catch (error) {
       alert(error.response.data);
