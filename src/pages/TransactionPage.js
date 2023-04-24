@@ -9,14 +9,13 @@ export default function TransactionsPage() {
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
   const { user } = useContext(UserContext);
-  const config = { headers: { Authorization: `Bearer ${user.token}` } }
+  const config = { headers: { Authorization: `Bearer ${user.token}` } };
 
   useEffect(() => {
     if (!user.token) return navigate("/");
   }, []);
 
   const opType = useParams();
-  if (opType.tipo === "saida") return opType.tipo = "saída";
 
   async function registerOps(event) {
     event.preventDefault();
