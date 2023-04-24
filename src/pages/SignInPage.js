@@ -57,4 +57,7 @@ const SingInContainer = styled.section`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  a {
+    padding-top: 40px;
+  }
 `;
