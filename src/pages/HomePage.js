@@ -18,7 +18,12 @@ export default function HomePage() {
   const [whatColor, setWhatColor] = useState("");
 
   useEffect(() => {
-    getOperationsList()
+    if (!user.token) {
+      alert("Não tens permissão para continuar, faça o login.");
+      navigate("/");
+    } else {
+      getOperationsList();
+    };
   });
 
   async function getOperationsList() {

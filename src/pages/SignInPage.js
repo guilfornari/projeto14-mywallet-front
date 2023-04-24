@@ -58,6 +58,11 @@ const SingInContainer = styled.section`
   justify-content: center;
   align-items: center;
   a {
-    padding-top: 40px;
-  }
+        font-weight: 700;
+        font-size: 15px;
+        line-height: 18px;
+        color: white;
+        text-decoration: none;
+        padding-top: 30px;
+    }
 `;
