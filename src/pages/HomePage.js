@@ -17,21 +17,18 @@ export default function HomePage() {
   const [balance, setBalance] = useState(0);
   const [whatColor, setWhatColor] = useState("");
 
-  useEffect(() => getOperationsList, []);
+  useEffect(() => {
+    getOperationsList()
+  });
 
   async function getOperationsList() {
+    try {
+      const res = await axios.get(`${process.env.REACT_APP_API_URL}/home`, config);
+      setOperations(res.data);
+      sumBalance(res.data);
 
-    if (!user.token) {
-      navigate("/");
-    } else {
-      try {
-        const res = await axios.get(`${process.env.REACT_APP_API_URL}/home`, config);
-        setOperations(res.data);
-        sumBalance(res.data);
-
-      } catch (error) {
-        alert(error.response.data);
-      }
+    } catch (error) {
+      alert(error.response.data);
     }
   };
 
@@ -72,28 +69,30 @@ export default function HomePage() {
       </Header>
 
       <TransactionsContainer>
-        <ul>
-          {operations.map((ops) => (<OperationCard
-            key={ops._id}
-            amount={ops.amount}
-            description={ops.description}
-            type={ops.type}
-            date={ops.date} />))}
-        </ul>
-
-        <article>
-          <strong>Saldo</strong>
-          <Value color={whatColor}>{balance.toFixed(2)}</Value>
-        </article>
+        {false ? "Nada" :
+          <>
+            <ul>
+              {operations.map((ops) => (<OperationCard
+                key={ops._id}
+                amount={ops.amount}
+                description={ops.description}
+                type={ops.type}
+                date={ops.date} />))}
+            </ul>
+            <article>
+              <strong>Saldo</strong>
+              <Value color={whatColor}>{balance.toFixed(2)}</Value>
+            </article>
+          </>
+        }
       </TransactionsContainer>
-
 
       <ButtonsContainer>
         <button onClick={() => newOps("entrada")}>
           <AiOutlinePlusCircle />
           <p>Nova <br /> entrada</p>
         </button>
-        <button onClick={() => newOps("saida")}>
+        <button onClick={() => newOps("saída")}>
           <AiOutlineMinusCircle />
           <p>Nova <br />saída</p>
         </button>

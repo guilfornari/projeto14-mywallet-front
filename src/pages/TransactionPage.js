@@ -13,7 +13,7 @@ export default function TransactionsPage() {
 
   useEffect(() => {
     if (!user.token) return navigate("/");
-  }, []);
+  });
 
   const opType = useParams();
 
