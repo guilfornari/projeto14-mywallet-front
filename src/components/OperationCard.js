@@ -27,7 +27,7 @@ const ListItemContainer = styled.li`
   margin-bottom: 8px;
   color: #000000;
   margin-right: 10px;
-  div span {
+    div span {
     color: #c6c6c6;
     margin-right: 10px;
   }

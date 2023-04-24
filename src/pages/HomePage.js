@@ -74,7 +74,7 @@ export default function HomePage() {
       </Header>
 
       <TransactionsContainer>
-        {false ? "Nada" :
+        {(operations.length === 0) ? <h5>Não há registros de entrada ou saída</h5> :
           <>
             <ul>
               {operations.map((ops) => (<OperationCard
@@ -111,6 +111,7 @@ const HomeContainer = styled.div`
   display: flex;
   flex-direction: column;
   height: calc(100vh - 50px);
+  position: relative;
 `;
 const Header = styled.header`
   display: flex;
@@ -136,13 +137,31 @@ const TransactionsContainer = styled.article`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  article {
+  overflow-y: scroll;
+  padding-bottom: 20px;
+    ::-webkit-scrollbar {
+    display: none;
+  }
+    article {
+    position: absolute;
+    bottom: 130px;
+    width: 89%;
+    height: 20px;
     display: flex;
-    justify-content: space-between;   
-    strong {
+    justify-content: space-between;
+    background-color: white;
+      strong {
       font-weight: 700;
       text-transform: uppercase;
     }
+  }
+  h5 {
+    padding: 50px;
+    text-align: center;
+    font-size: 20px;
+    margin-top: 150px;
+    font-weight: 300;
+    color: #868686;
   }
 `;
 const ButtonsContainer = styled.section`
